@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>DiSC Kişilik Raporu</title>
+    <style>
+        body { font-family: DejaVu Sans, sans-serif; margin: 40px; color: #333; line-height: 1.6; }
+        h1, h2 { color: #204F74; }
+        .chart-container { margin-top: 40px; text-align: center; }
+        .legend { display: flex; justify-content: center; margin-top: 20px; gap: 20px; }
+        .legend div { display: flex; align-items: center; gap: 5px; font-size: 14px; }
+        .color-box { width: 12px; height: 12px; display: inline-block; }
+    </style>
+</head>
+<body>
+    <h1>DiSC Kişilik Testi Sonucu</h1>
+
+    <p><strong>D:</strong> {{ D }} &nbsp;
+       <strong>I:</strong> {{ I }} &nbsp;
+       <strong>S:</strong> {{ S }} &nbsp;
+       <strong>C:</strong> {{ C }}</p>
+<!-- 1. Kapak -->
+<div class="page">
+    <div class="center">
+        <h1>DiSC Kişilik Profili</h1>
+        <p class="info"><strong>Ad Soyad:</strong> {{ ad }}</p>
+        <p class="info"><strong>Doğum Yılı:</strong> {{ yil }}</p>
+        <p class="info"><strong>Cinsiyet:</strong> {{ cinsiyet }}</p>
+        <p class="info"><strong>Rapor Tarihi:</strong> {{ now }}</p>
+    </div>
+
+<!-- 2. Kişilik Tipi Tanımı -->
+<div class="page">
+    <h2>{{ disc_tip.baslik }}</h2>
+    <p>{{ disc_tip.aciklama }}</p>
+</div>
+
+<!-- 3. Davranış Kalıpları -->
+<div class="page">
+    <h2>Davranış Kalıpları</h2>
+    <p>{{ disc_tip.davranislar | replace('\\n', '<br>') | safe }}</p>
+</div>
+
+<!-- 4. Güçlü Yönler -->
+<div class="page">
+    <h2>Güçlü Yönler</h2>
+    <p>{{ disc_tip.guclu | replace('\\n', '<br>') | safe }}</p>
+</div>
+
+<!-- 5. Zayıf Yönler -->
+<div class="page">
+    <h2>Zayıf Yönler</h2>
+    <p>{{ disc_tip.zayif | replace('\\n', '<br>') | safe }}</p>
+</div>
+
+<!-- 6. Gelişim Alanları -->
+<div class="page">
+    <h2>Gelişim Alanları</h2>
+    <p>{{ disc_tip.gelisim | replace('\\n', '<br>') | safe }}</p>
+</div>
+
+<!-- 7. İletişim Tarzı ve Sosyal Davranışlar -->
+<div class="page">
+    <h2>İletişim Tarzı ve Sosyal Davranışlar</h2>
+    <p>{{ disc_tip.iletisim | replace('\\n', '<br>') | safe }}</p>
+</div>
+
+<!-- 8. Liderlik Özellikleri -->
+<div class="page">
+    <h2>Liderlik Özellikleri</h2>
+    <p>{{ disc_tip.liderlik | replace('\\n', '<br>') | safe }}</p>
+</div>
+
+
+    <div class="chart-container">
+        <svg width="300" height="300" viewBox="0 0 32 32">
+            <circle r="16" cx="16" cy="16" fill="white"/>
+            {% set total = D + I + S + C %}
+            {% set degD = (D / total) * 360 %}
+            {% set degI = (I / total) * 360 %}
+            {% set degS = (S / total) * 360 %}
+            {% set degC = (C / total) * 360 %}
+            {% set offsetI = degD %}
+            {% set offsetS = offsetI + degI %}
+            {% set offsetC = offsetS + degS %}
+
+            <circle r="16" cx="16" cy="16"
+                stroke="red" stroke-width="32" fill="none"
+                stroke-dasharray="{{ degD }}, 360" stroke-dashoffset="0" />
+            <circle r="16" cx="16" cy="16"
+                stroke="orange" stroke-width="32" fill="none"
+                stroke-dasharray="{{ degI }}, 360" stroke-dashoffset="-{{ offsetI }}" />
+            <circle r="16" cx="16" cy="16"
+                stroke="green" stroke-width="32" fill="none"
+                stroke-dasharray="{{ degS }}, 360" stroke-dashoffset="-{{ offsetS }}" />
+            <circle r="16" cx="16" cy="16"
+                stroke="blue" stroke-width="32" fill="none"
+                stroke-dasharray="{{ degC }}, 360" stroke-dashoffset="-{{ offsetC }}" />
+        </svg>
+
+        <div class="legend">
+            <div><span class="color-box" style="background:red;"></span> D (Dominant)</div>
+            <div><span class="color-box" style="background:orange;"></span> I (Etkileyici)</div>
+            <div><span class="color-box" style="background:green;"></span> S (Sakin)</div>
+            <div><span class="color-box" style="background:blue;"></span> C (Titiz)</div>
+        </div>
+    </div>
+</body>
+</html>
